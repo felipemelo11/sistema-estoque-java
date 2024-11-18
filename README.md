@@ -31,7 +31,7 @@ Siga os passos abaixo para executar o sistema de gerenciamento de estoque:
 1. **Clone este repositório**: git clone https://github.com/felipemelo11/sistema-estoque-java.git
 2. **Navegar até o Diretório do Projeto**: cd sistema-estoque-java/src
 3. **Compilar os Arquivos Java**: javac padrao/*.java
-4. **Executar o Programa**: java padrao.Main
+4. **Executar o Programa**: java padrao.Main.java
 
 ## Contribuições 🤝
 - Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests para melhorias e correções.
