@@ -5,6 +5,6 @@ public class PrecoNegativoException extends Exception {
 	
 	@Override
 	public String getMessage() {
-		return "Preço não pode ser negativo!";
+		return "Preço não pode ser negativo! Tente Novamente.\n";
 	}
 }

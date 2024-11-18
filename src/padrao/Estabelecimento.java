@@ -16,16 +16,16 @@ public class Estabelecimento {
 	private Scanner scan;
 	private int idProduto;
 	
-	public Estabelecimento() {
-		produtos = new HashMap<>();
-		scan = new Scanner(System.in);
-		idProduto = 1;
+	public Estabelecimento(Scanner scan) {
+		this.produtos = new HashMap<>();
+		this.scan = scan;
+		this.idProduto = 1;
 	}
 	
 	public void executarSistemaEstoque() {
-		boolean flag = true;
+		boolean continuar = true;
 		
-		while(flag) {
+		while(continuar) {
 			switch(menu()) {
 				case ADICIONAR_PRODUTO:
 					adicionarProduto();
@@ -41,32 +41,35 @@ public class Estabelecimento {
 					break;
 				case SAIR:
 					System.out.println("Saindo do sistema...");
-					flag = false;	
+					continuar = false;	
 					break;
 			}	
 		}
 	}
 	
 	public int menu() {
-		System.out.println("=== Sistema de Estoque ===");
-		System.out.println("1. Adicionar Produto");
-		System.out.println("2. Listar Produtos");
-		System.out.println("3. Atualizar Quantidade");
-		System.out.println("4. Remover Produto");
-		System.out.println("5. Sair");
-		System.out.print("Escolha uma opção: ");
-		
-		int escolha = 0;
-		
-		try {
-			escolha = scan.nextInt();
-			if (escolha > 5 || escolha < 1) throw new InputMismatchException();
-		} catch (InputMismatchException e) {
-			scan.nextLine();
-			System.out.println("Digite uma opção do menu válida!\n");
-		}
+		while(true) {
+			System.out.println("=== Sistema de Estoque ===");
+			System.out.println("1. Adicionar Produto");
+			System.out.println("2. Listar Produtos");
+			System.out.println("3. Atualizar Quantidade");
+			System.out.println("4. Remover Produto");
+			System.out.println("5. Sair");
+			System.out.print("Escolha uma opção: ");
+			
+			try {
+				int escolha = scan.nextInt();
+				
+				if (escolha >= 1 && escolha <= 5) {
+					return escolha;
+				}
 
-		return escolha;
+				System.out.println("Digite uma opção do menu válida!\n");
+			} catch (InputMismatchException e) {
+				scan.nextLine();
+				System.out.println("Entrada inválida! Tente Novamente.\n");
+			}
+		}
 	}
 	
 	public void adicionarProduto() {
@@ -77,17 +80,29 @@ public class Estabelecimento {
 			System.out.print("\nDigite o nome do produto: ");
 			p.setNome(scan.nextLine());
 
-			System.out.print("Digite a quantidade: ");
-			p.setQuantidade(scan.nextInt());
+			while (true) {
+				System.out.print("Digite a quantidade: ");
+				try {
+					p.setQuantidade(scan.nextInt());
+					break;
+				} catch (QuantidadeNegativaException e) {
+					System.out.println(e.getMessage());
+				}
+			}
+
+			while (true) {
+				System.out.print("Digite o preço: ");
+				try {
+					p.setPreco(scan.nextDouble());
+					break;
+				} catch (PrecoNegativoException e) {
+					System.out.println(e.getMessage());
+				}
+			}
 			
-			System.out.print("Digite o preço: ");
-			p.setPreco(scan.nextDouble());
 		} catch (InputMismatchException e) {
 			scan.nextLine();
 			System.out.println("Digite uma entrada válida!\n");
-			return;
-		} catch (QuantidadeNegativaException | PrecoNegativoException e) {
-			System.out.println(e.getMessage() + "\n");
 			return;
 		}
 
@@ -103,60 +118,72 @@ public class Estabelecimento {
 			return;
 		}
 		
-		for (Map.Entry<Integer, Produto> entry: produtos.entrySet()) {
+		System.out.printf("%-5s %-20s %-10s %-10s\n", "ID", "Nome", "Quantidade", "Preço (R$)");
+		System.out.println("-------------------------------------------------------");
+	
+		for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
+			int id = entry.getKey();
 			Produto p = entry.getValue();
-			System.out.println("ID: " + entry.getKey());
-			System.out.println("Nome: " + p.getNome());
-			System.out.println("Quantidade: " + p.getQuantidade());
-			System.out.printf("Preço: R$%.2f\n\n", p.getPreco());
+			System.out.printf("%-5d %-20s %-10d %-10.2f\n", id, p.getNome(), p.getQuantidade(), p.getPreco());
 		}
+	
+		System.out.println("-------------------------------------------------------\n");
 	}
 	
 	public void atualizarQuantidade() {
-		int id = 0;
-		int qtd = 0;
-		
 		try {
 			System.out.print("\nDigite o ID do produto para atualizar a quantidade: ");
-			id = scan.nextInt();
-			
-			System.out.print("Digite a nova quantidade: ");
-			qtd = scan.nextInt();
+			int id = scan.nextInt();
+	
+			Produto p = produtos.get(id);
+			if (p == null) {
+				System.out.println("ID não encontrado! Tente novamente.\n");
+				return;
+			}
+	
+			while (true) {
+				System.out.print("Digite a nova quantidade: ");
+				try {
+					p.setQuantidade(scan.nextInt());
+					System.out.println("Quantidade atualizada com sucesso!\n");
+					break;
+				} catch (QuantidadeNegativaException e) {
+					System.out.println(e.getMessage());
+				}
+			}
+	
 		} catch (InputMismatchException e) {
 			scan.nextLine();
 			System.out.println("Digite uma entrada válida!\n");
-			return;
-		}
-
-		Produto p = produtos.get(id);
-		if (p != null) {
-			try {
-				p.setQuantidade(qtd);
-				System.out.println("Quantidade atualizada com sucesso!\n");
-			} catch (QuantidadeNegativaException e) {
-				System.out.println(e.getMessage() + "\n");
-			}
-		} else {
-			System.out.println("ID não encontrado! Tente Novamente.\n");
 		}
 	}
 	
 	public void removerProduto() {
-		int id = 0;
-		
 		try {
-			System.out.print("Digite o ID do produto para remover: ");
-			id = scan.nextInt();
+			if (produtos.isEmpty()) {
+				System.out.println("Estoque está vazio! Não há produtos para remover.\n");
+				return;
+			}
+
+			System.out.println("\n--- Produtos disponíveis para remoção ---");
+			for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
+				System.out.printf("ID: %d | Nome: %s\n", entry.getKey(), entry.getValue().getNome());
+			}
+
+			System.out.print("\nDigite o ID do produto para remover: ");
+			int id = scan.nextInt();
+
+			if (produtos.containsKey(id)) {
+				produtos.remove(id);
+				System.out.println("Produto removido com sucesso!\n");
+			} else {
+				System.out.println("ID não encontrado! Tente Novamente.\n");
+			}
+
 		} catch (InputMismatchException e) {
 			scan.nextLine();
-			System.out.println("Digite um ID válido!\n");			
+			System.out.println("Entrada inválida! Certifique-se de digitar um número inteiro.\n");			
 			return;
-		}
-		
-		if (produtos.remove(id) != null) {
-			System.out.println("Produto removido com sucesso!\n");
-		} else {
-			System.out.println("ID não encontrado! Tente Novamente.\n");
 		}
 	}
 }

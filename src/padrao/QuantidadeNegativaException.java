@@ -5,6 +5,6 @@ public class QuantidadeNegativaException extends Exception {
 
 	@Override
 	public String getMessage() {
-		return "Quantidade não pode ser negativa!";
+		return "Quantidade não pode ser negativa! Tente Novamente.\n";
 	}
 }
