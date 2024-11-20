@@ -132,6 +132,16 @@ public class Estabelecimento {
 	
 	public void atualizarQuantidade() {
 		try {
+			if (produtos.isEmpty()) {
+				System.out.println("Estoque está vazio! Não há produtos para atualizar.\n");
+				return;
+			}
+			
+			System.out.println("\n--- Produtos disponíveis ---");
+			for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
+				System.out.printf("ID: %d | Nome: %s\n", entry.getKey(), entry.getValue().getNome());
+			}
+			
 			System.out.print("\nDigite o ID do produto para atualizar a quantidade: ");
 			int id = scan.nextInt();
 	
@@ -165,7 +175,7 @@ public class Estabelecimento {
 				return;
 			}
 
-			System.out.println("\n--- Produtos disponíveis para remoção ---");
+			System.out.println("\n--- Produtos disponíveis ---");
 			for (Map.Entry<Integer, Produto> entry : produtos.entrySet()) {
 				System.out.printf("ID: %d | Nome: %s\n", entry.getKey(), entry.getValue().getNome());
 			}
