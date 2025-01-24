@@ -33,5 +33,7 @@ Siga os passos abaixo para executar o sistema de gerenciamento de estoque:
 3. **Compilar os Arquivos Java**: javac padrao/*.java
 4. **Executar o Programa**: java padrao.Main.java
 
-## Contribuições 🤝
-- Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests para melhorias e correções.
+## Autor
+Felipe de Melo Brito
+
+https://www.linkedin.com/in/felipemelo1106
